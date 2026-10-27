@@ -1,44 +1,43 @@
 import { Scene } from './scene/Scene'
-import * as copy from './content/copy'
-import { SHOTS } from './timeline/shots'
 import { useMasterTimeline } from './timeline/useMasterTimeline'
-import { MaskText } from './ui/MaskText'
-import { ShotSection } from './ui/ShotSection'
-
-// Step 3: placeholder copy per shot to prove the camera timeline.
-const PLACEHOLDER: Record<string, { label: string; title: string }> = {
-  hero: { label: copy.hero.eyebrow, title: copy.hero.title.join(' ') },
-  stats: { label: 'STATS', title: 'Signal' },
-  problem: copy.problem,
-  solution: copy.solution,
-  work: copy.work,
-  pricing: copy.pricing,
-  process: copy.process,
-  whyus: copy.whyUs,
-  faq: copy.faq,
-  cta: copy.finalCta,
-  footer: { label: copy.footer.location, title: 'Footer' },
-}
+import { Hud } from './ui/Hud'
+import { Nav } from './ui/Nav'
+import { PetalTooltip } from './ui/PetalTooltip'
+import { Faq } from './ui/sections/Faq'
+import { FinalCta } from './ui/sections/FinalCta'
+import { Footer } from './ui/sections/Footer'
+import { Hero } from './ui/sections/Hero'
+import { Pricing } from './ui/sections/Pricing'
+import { Problem } from './ui/sections/Problem'
+import { Process } from './ui/sections/Process'
+import { Solution } from './ui/sections/Solution'
+import { Stats } from './ui/sections/Stats'
+import { Work } from './ui/sections/Work'
+import { WhyUs } from './ui/sections/WhyUs'
 
 export default function App() {
   useMasterTimeline(true)
   return (
     <>
-      <div className="fixed inset-0">
+      <div className="fixed inset-0" aria-hidden="true">
         <Scene />
       </div>
+      <Nav />
       <main className="relative">
-        {SHOTS.map((s) => (
-          <ShotSection key={s.id} id={s.id} className={s.pin ? '' : 'min-h-[160svh]'}>
-            <div className="flex h-full flex-col justify-center px-6 py-24 md:px-16">
-              <p className="micro label-line" data-fade>
-                {PLACEHOLDER[s.id].label}
-              </p>
-              <MaskText as="h2" className="headline mt-6 max-w-3xl text-5xl md:text-7xl" text={PLACEHOLDER[s.id].title} />
-            </div>
-          </ShotSection>
-        ))}
+        <Hero />
+        <Stats />
+        <Problem />
+        <Solution />
+        <Work />
+        <Pricing />
+        <Process />
+        <WhyUs />
+        <Faq />
+        <FinalCta />
+        <Footer />
       </main>
+      <Hud />
+      <PetalTooltip />
     </>
   )
 }

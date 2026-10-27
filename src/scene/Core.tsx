@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import * as THREE from 'three'
 import {
   buildPetalPanels,
@@ -38,9 +38,11 @@ interface CoreProps {
   petalCount?: number
   /** Cursor tilt on/off (off for reduced motion). */
   interactive?: boolean
+  /** Extras that should turn and tilt with the core (e.g. the light path). */
+  children?: ReactNode
 }
 
-export function Core({ petalCount = PETAL_COUNT, interactive = true }: CoreProps) {
+export function Core({ petalCount = PETAL_COUNT, interactive = true, children }: CoreProps) {
   const rootRef = useRef<THREE.Group>(null)
   const hitRef = useRef<THREE.InstancedMesh>(null)
   const panelsRef = useRef<THREE.InstancedMesh>(null)
@@ -253,7 +255,11 @@ export function Core({ petalCount = PETAL_COUNT, interactive = true }: CoreProps
     }
 
     // Anchors are authored for 12 petals; map them onto however many we have.
-    for (let i = 0; i < PETAL_COUNT; i++) anchors.petal[i].copy(petalAnchor[Math.floor((i * petalCount) / PETAL_COUNT)])
+    for (let i = 0; i < PETAL_COUNT; i++) {
+      const p = Math.floor((i * petalCount) / PETAL_COUNT)
+      anchors.petal[i].copy(petalAnchor[p])
+      readouts.petalLevels[i] = petalLit[p]
+    }
     readouts.petalsLit = (litSum * PETAL_COUNT) / petalCount
   })
 
@@ -298,6 +304,7 @@ export function Core({ petalCount = PETAL_COUNT, interactive = true }: CoreProps
           }}
         />
       )}
+      {children}
       </group>
     </group>
   )

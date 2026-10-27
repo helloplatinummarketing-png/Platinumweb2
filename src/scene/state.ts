@@ -63,6 +63,8 @@ export type SceneState = typeof sceneState
 /** Petal lit level as the scene currently resolves it (written by Core, read by the HUD). */
 export const readouts = {
   petalsLit: 0,
+  /** Per petal lit level 0..1, indexed on the 12-petal scale. */
+  petalLevels: new Float32Array(PETAL_COUNT),
 }
 
 /**

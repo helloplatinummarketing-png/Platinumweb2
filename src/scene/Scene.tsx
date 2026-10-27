@@ -1,10 +1,14 @@
 import { Canvas } from '@react-three/fiber'
+import { Suspense } from 'react'
 import * as THREE from 'three'
+import { AnchorProjector } from './AnchorProjector'
 import { Atmosphere } from './Atmosphere'
 import { CameraRig } from './CameraRig'
 import { Core } from './Core'
 import { Effects } from './Effects'
+import { LightPath } from './LightPath'
 import { Lights } from './Lights'
+import { Screen } from './Screen'
 import { sceneState } from './state'
 
 export function Scene() {
@@ -23,8 +27,14 @@ export function Scene() {
       <fog attach="fog" args={['#020617', 12, 30]} />
       <Lights />
       <Atmosphere />
-      <Core />
+      <Core>
+        <LightPath />
+      </Core>
+      <Suspense fallback={null}>
+        <Screen />
+      </Suspense>
       <CameraRig />
+      <AnchorProjector />
       <Effects />
     </Canvas>
   )

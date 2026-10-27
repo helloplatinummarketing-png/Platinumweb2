@@ -49,8 +49,8 @@ export const hero = {
 export const stats = [
   { value: 91, prefix: '', suffix: '%', label: 'Customers search online first', petal: 0 },
   { value: 5, prefix: '', suffix: ' Days', label: 'Average site delivery', petal: 2 },
-  { value: 24, prefix: '', suffix: '/7', label: 'Automation uptime', petal: 5 },
-  { value: 0, prefix: '£', suffix: '', label: 'Cost to book a demo', petal: 8 },
+  { value: 24, prefix: '', suffix: '/7', label: 'Automation uptime', petal: 4 },
+  { value: 0, prefix: '£', suffix: '', label: 'Cost to book a demo', petal: 7 },
   { value: 30, prefix: '', suffix: ' Days', label: 'Notice to cancel', petal: 10 },
 ]
 
@@ -102,7 +102,7 @@ export const work = {
     cta: 'VIEW LIVE SITE →',
     url: 'https://bristol-spark-electrical.vercel.app/',
     /** Drop a real screenshot here (e.g. '/work/bristol-spark.jpg') to replace the generated preview. */
-    screenshot: null as string | null,
+    screenshot: '/work/bristol-spark.jpg' as string | null,
   },
   next: 'Your business could be next. ↓',
 }
@@ -194,10 +194,10 @@ export const process = {
       n: '01',
       title: 'Book a Free Demo',
       body: "15 minutes. We look at your online presence and tell you exactly what's costing you jobs.",
-      petal: 2,
+      petal: 1,
     },
-    { n: '02', title: 'We Build It', body: 'Your website and automation built, tested, and live in 5 working days.', petal: 6 },
-    { n: '03', title: 'You Grow', body: 'Leads captured automatically while you focus on the work.', petal: 10 },
+    { n: '02', title: 'We Build It', body: 'Your website and automation built, tested, and live in 5 working days.', petal: 3 },
+    { n: '03', title: 'You Grow', body: 'Leads captured automatically while you focus on the work.', petal: 5 },
   ],
 }
 
@@ -308,3 +308,19 @@ export const footer = {
   contactTitle: 'GET IN TOUCH',
   copyright: '© 2026 Platinum Marketing Agency',
 }
+
+/** The 12 parts of the system, one per petal (tooltip text on hover). */
+export const petals = [
+  'Premium website',
+  'Local SEO',
+  'Google Business Profile',
+  'Instant notifications',
+  'AI chatbot',
+  'Missed call text-back',
+  'Instant lead response',
+  'Review collection',
+  'Appointment reminders',
+  'Quote follow-up',
+  'Invoice chase',
+  'AI voice caller',
+]

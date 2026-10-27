@@ -65,7 +65,7 @@ const BASE: ShotState = {
 }
 
 /** Petals the gold light path runs through in the process shot (out of 12). */
-export const PATH_PETALS = [2, 6, 10]
+export const PATH_PETALS = [1, 3, 5]
 
 export const STATE_KEYS = Object.keys(BASE) as (keyof ShotState)[]
 
@@ -77,13 +77,13 @@ export function endState(s: ShotState & { steps?: Partial<ShotState>[] }): ShotS
 
 const shot = (s: Partial<Shot> & Pick<Shot, 'id' | 'name'>, prev: ShotState & { steps?: Partial<ShotState>[] }): Shot => ({
   pin: true,
-  length: 2.4,
-  mobileLength: 1.8,
+  length: 2.8,
+  mobileLength: 2,
   ...endState(prev),
   ...s,
 })
 
-const hero = shot({ id: 'hero', name: 'Core', length: 2, mobileLength: 1.6 }, BASE)
+const hero = shot({ id: 'hero', name: 'Core', length: 2.2, mobileLength: 1.7 }, BASE)
 
 const stats = shot(
   {
@@ -245,7 +245,7 @@ const cta = shot(
     camera: [0, 4.6, 14],
     target: [0, 0.4, 0],
     fov: 34,
-    shift: 0,
+    shift: 0.2,
     charge: 1,
     glow: 1.25,
     unfold: 1,

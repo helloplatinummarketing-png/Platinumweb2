@@ -94,7 +94,7 @@ export function useMasterTimeline(enabled: boolean) {
       const sections = SHOTS.map((s) => document.querySelector<HTMLElement>(`[data-shot="${s.id}"]`))
       const tops = sections.map((el) => (el ? el.getBoundingClientRect().top + window.scrollY : 0))
       const arrive = tops.map((t) => Math.min(1, t / max))
-      const trans = tops.map((t, i) => (i === 0 ? 0 : Math.min(0.75 * vh, 0.65 * (t - tops[i - 1])) / max))
+      const trans = tops.map((t, i) => (i === 0 ? 0 : Math.min(0.6 * vh, 0.5 * (t - tops[i - 1])) / max))
       shotScroll = tops.map((t, i) => Math.min(max, t + (SHOTS[i].pin ? vh * 0.05 : 0)))
       shotStart = arrive.map((a, i) => a - trans[i] * 0.5)
 
@@ -138,7 +138,7 @@ export function useMasterTimeline(enabled: boolean) {
           const at = steps.length ? holdStart + k * stepDur : arrive[i]
           const d = stepDur || trans[i] || 0.02
           tl!.fromTo(el.querySelectorAll('[data-wi]'), { yPercent: 115 }, { yPercent: 0, duration: d * 0.3, stagger: d * 0.01, ease: 'power3.out' }, at)
-          tl!.fromTo(el, { autoAlpha: 0.15 }, { autoAlpha: 1, duration: d * 0.3 }, at)
+          tl!.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: d * 0.3 }, at)
           el.querySelectorAll<HTMLElement>('[data-count]').forEach((c) => {
             tl!.fromTo(c, { innerText: 0 }, { innerText: Number(c.dataset.count), snap: { innerText: 1 }, duration: d * 0.4 }, at)
           })
