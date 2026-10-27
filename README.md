@@ -17,6 +17,13 @@ npm run preview    # serve dist/
 npm run lint       # oxlint
 ```
 
+### Deploy
+
+The Vercel project `platinum6/platinum-3d` is connected to
+[`helloplatinummarketing-png/Platinumweb2`](https://github.com/helloplatinummarketing-png/Platinumweb2).
+Every push to `main` deploys to production (https://platinum-3d-two.vercel.app);
+pushes to other branches get preview URLs. No environment variables are needed.
+
 ### Test switches (add to the URL)
 
 | Flag        | What it does                                                         |
