@@ -1,7 +1,6 @@
 import 'lenis/dist/lenis.css'
-import { useLayoutEffect } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react'
 import { capabilities, mode } from './capabilities'
-import { Scene } from './scene/Scene'
 import { sceneState } from './scene/state'
 import { SHOTS, endState } from './timeline/shots'
 import { useMasterTimeline } from './timeline/useMasterTimeline'
@@ -39,8 +38,29 @@ function applyStillState() {
 
 if (mode === 'static') applyStillState()
 
+// The 3D bundle loads after first paint; the poster holds the frame until then.
+const Scene = lazy(() => import('./scene/Scene').then((m) => ({ default: m.Scene })))
+const Poster = () => <img src="/poster.jpg" alt="" className="h-full w-full object-cover opacity-80" />
+
+/** Mount the 3D only once the page has painted and the browser is idle. */
+function useIdle(timeout = 1200) {
+  const [idle, setIdle] = useState(false)
+  useEffect(() => {
+    const go = () => setIdle(true)
+    // Safari has no requestIdleCallback.
+    if (typeof window.requestIdleCallback !== 'function') {
+      const id = setTimeout(go, 300)
+      return () => clearTimeout(id)
+    }
+    const id = window.requestIdleCallback(go, { timeout })
+    return () => window.cancelIdleCallback(id)
+  }, [timeout])
+  return idle
+}
+
 export default function App() {
   const full = mode === 'full'
+  const idle = useIdle()
   useMasterTimeline(full)
 
   useLayoutEffect(() => {
@@ -51,9 +71,11 @@ export default function App() {
     <>
       <div className="fixed inset-0" aria-hidden="true">
         {mode === 'poster' ? (
-          <img src="/poster.jpg" alt="" className="h-full w-full object-cover opacity-80" />
+          <Poster />
         ) : (
-          <Scene mobile={capabilities.mobile} still={mode === 'static'} />
+          <Suspense fallback={<Poster />}>
+            {idle ? <Scene mobile={capabilities.mobile} still={mode === 'static'} /> : <Poster />}
+          </Suspense>
         )}
       </div>
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-gold focus:px-4 focus:py-2 focus:text-navy">

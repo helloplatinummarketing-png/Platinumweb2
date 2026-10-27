@@ -4,7 +4,8 @@ import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { work } from '../content/copy'
 import { GOLD } from './materials'
-import { anchors, sceneState } from './state'
+import { anchors } from './anchors'
+import { sceneState } from './state'
 
 const POSITION = new THREE.Vector3(5.1, 1.35, -2.9)
 const FACING = new THREE.Vector3(3.6, 0.95, 1.4)

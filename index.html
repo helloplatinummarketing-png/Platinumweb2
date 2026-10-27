@@ -26,10 +26,35 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts load without blocking first paint (display=swap). -->
     <link
-      rel="stylesheet"
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+      />
+    </noscript>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Platinum Marketing Agency",
+        "description": "Premium websites and automation for UK trades businesses. Live in 5 days, running 24/7 from day one.",
+        "url": "https://platinummarketingagency.co.uk/",
+        "telephone": "+447594217753",
+        "email": "helloplatinummarketing@gmail.com",
+        "image": "https://platinummarketingagency.co.uk/og-image.jpg",
+        "address": { "@type": "PostalAddress", "addressLocality": "Bristol", "addressCountry": "GB" },
+        "geo": { "@type": "GeoCoordinates", "latitude": 51.4545, "longitude": -2.5879 },
+        "areaServed": "GB",
+        "priceRange": "££"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

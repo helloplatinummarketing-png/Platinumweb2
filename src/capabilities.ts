@@ -1,9 +1,15 @@
 /** What this device can do, decided once at startup. */
 
+/**
+ * WebGL with real GPU acceleration. `failIfMajorPerformanceCaveat` makes the
+ * browser refuse a software-rendered context (e.g. no GPU drivers), where the
+ * scene would crawl; those visitors get the poster instead.
+ */
 function hasWebGL() {
   try {
     const canvas = document.createElement('canvas')
-    return !!(canvas.getContext('webgl2') || canvas.getContext('webgl'))
+    const opts = { failIfMajorPerformanceCaveat: true }
+    return !!(canvas.getContext('webgl2', opts) || canvas.getContext('webgl', opts))
   } catch {
     return false
   }
@@ -12,7 +18,7 @@ function hasWebGL() {
 const params = new URLSearchParams(window.location.search)
 
 export const capabilities = {
-  webgl: params.has('nowebgl') ? false : hasWebGL(),
+  webgl: params.has('nowebgl') ? false : params.has('forcewebgl') || hasWebGL(),
   // ?reduced forces the still version, ?motion forces the full one (handy when the OS has motion turned off).
   reducedMotion: params.has('motion')
     ? false

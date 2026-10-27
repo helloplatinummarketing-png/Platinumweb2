@@ -24,7 +24,7 @@ export function Solution() {
               <GlassCard className="h-full p-4 max-md:bg-navy/70 md:p-5">
                 <p className="micro flex justify-between text-gold">
                   <span>{stage.when}</span>
-                  <span className="text-slate-500">
+                  <span className="text-slate-400">
                     {String(k * 4 + 1).padStart(2, '0')}–{String(k * 4 + 4).padStart(2, '0')}
                   </span>
                 </p>

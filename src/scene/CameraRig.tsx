@@ -11,8 +11,8 @@ import { sceneState } from './state'
  */
 export function CameraRig({ parallax = true }: { parallax?: boolean }) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
-  const pos = useMemo(() => sceneState.camera.position.clone(), [])
-  const target = useMemo(() => sceneState.camera.target.clone(), [])
+  const pos = useMemo(() => new THREE.Vector3().copy(sceneState.camera.position), [])
+  const target = useMemo(() => new THREE.Vector3().copy(sceneState.camera.target), [])
   const desired = useMemo(() => new THREE.Vector3(), [])
   const offset = useMemo(() => new THREE.Vector3(), [])
 

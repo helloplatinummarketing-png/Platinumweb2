@@ -17,7 +17,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
           <div data-fade>
             <Logo />
-            <p className="micro mt-5 text-slate-500">{footer.location}</p>
+            <p className="micro mt-5 text-slate-400">{footer.location}</p>
           </div>
           {footer.columns.map((col) => (
             <nav key={col.title} data-fade aria-label={col.title}>
@@ -54,7 +54,7 @@ export function Footer() {
             </ul>
           </address>
         </div>
-        <div data-fade className="micro mt-12 flex flex-wrap justify-between gap-4 border-t border-white/10 pt-6 text-[9px] text-slate-500">
+        <div data-fade className="micro mt-12 flex flex-wrap justify-between gap-4 border-t border-white/10 pt-6 text-[9px] text-slate-400">
           <p>{footer.copyright}</p>
           <p className="flex gap-6">
             <a href={links.privacy} className="hover:text-ink">

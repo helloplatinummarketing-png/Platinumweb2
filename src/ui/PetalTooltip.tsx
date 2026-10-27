@@ -29,7 +29,7 @@ export function PetalTooltip() {
         shown = key
         node.style.opacity = p >= 0 ? '1' : '0'
         if (p >= 0) {
-          node.innerHTML = `<span class="text-slate-500">PETAL ${pad(p + 1)} / 12</span><br/><span class="text-ink">${petals[p].toUpperCase()}</span><br/><span class="${online ? 'text-gold' : 'text-slate-500'}">${online ? '● ONLINE' : '○ STANDBY'}</span>`
+          node.innerHTML = `<span class="text-slate-400">PETAL ${pad(p + 1)} / 12</span><br/><span class="text-ink">${petals[p].toUpperCase()}</span><br/><span class="${online ? 'text-gold' : 'text-slate-400'}">${online ? '● ONLINE' : '○ STANDBY'}</span>`
         }
       }
     }

@@ -29,7 +29,8 @@ export function createBrushedTexture(size = 512) {
 }
 
 export function createPlatinumMaterial(brushed: THREE.Texture) {
-  return new THREE.MeshPhysicalMaterial({
+  // Standard (not Physical) keeps the shader small; it compiles far faster on ANGLE/D3D.
+  return new THREE.MeshStandardMaterial({
     color: PLATINUM,
     metalness: 1,
     roughness: 0.42,
@@ -51,7 +52,7 @@ export interface PanelUniforms {
 }
 
 /**
- * Solar-cell panel material. A MeshPhysicalMaterial with two per-instance
+ * Solar-cell panel material. A MeshStandardMaterial with two per-instance
  * attributes injected:
  *   aLit  (0..1)  how switched-on this panel is, drives a gold emissive above
  *                 the bloom threshold so only lit panels glow
@@ -68,12 +69,10 @@ export function createPanelMaterial() {
     uColdColor: { value: COLD.clone() },
   }
 
-  const material = new THREE.MeshPhysicalMaterial({
+  const material = new THREE.MeshStandardMaterial({
     color: new THREE.Color('#0a0e18'),
-    metalness: 0.55,
-    roughness: 0.3,
-    clearcoat: 1,
-    clearcoatRoughness: 0.12,
+    metalness: 0.6,
+    roughness: 0.22,
   })
 
   material.onBeforeCompile = (shader) => {

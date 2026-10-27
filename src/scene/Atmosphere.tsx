@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo } from 'react'
 import * as THREE from 'three'
+import { createRandom } from './random'
 import { sceneState } from './state'
 
 const FLOOR_Y = -1.62
@@ -104,44 +105,50 @@ export function Atmosphere({ dust = 420 }: { dust?: number }) {
   const dustGeo = useMemo(() => {
     const g = new THREE.BufferGeometry()
     const pos = new Float32Array(dust * 3)
+    const random = createRandom(7)
     for (let i = 0; i < dust; i++) {
-      const r = Math.sqrt(Math.random()) * 7
-      const a = Math.random() * Math.PI * 2
+      const r = Math.sqrt(random()) * 7
+      const a = random() * Math.PI * 2
       pos[i * 3] = Math.cos(a) * r
-      pos[i * 3 + 1] = FLOOR_Y + Math.random() * 7
+      pos[i * 3 + 1] = FLOOR_Y + random() * 7
       pos[i * 3 + 2] = Math.sin(a) * r
     }
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
     return g
   }, [dust])
 
-  const dustMat = useMemo(
-    () =>
-      new THREE.PointsMaterial({
-        size: 0.018,
-        color: '#e8dcc0',
-        transparent: true,
-        opacity: 0.35,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        sizeAttenuation: true,
-      }),
-    [],
-  )
+  // Dust rises and wraps in the vertex shader, so no buffer upload per frame.
+  const dustTime = useMemo(() => ({ value: 0 }), [])
+  const dustMat = useMemo(() => {
+    const m = new THREE.PointsMaterial({
+      size: 0.018,
+      color: '#e8dcc0',
+      transparent: true,
+      opacity: 0.35,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true,
+    })
+    m.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime = dustTime
+      shader.vertexShader = shader.vertexShader
+        .replace('#include <common>', '#include <common>\nuniform float uTime;')
+        .replace(
+          '#include <begin_vertex>',
+          `#include <begin_vertex>
+          transformed.y = ${FLOOR_Y.toFixed(2)} + mod(transformed.y - ${FLOOR_Y.toFixed(2)} + uTime * 0.04, 7.0);`,
+        )
+    }
+    return m
+  }, [dustTime])
 
-  useFrame((state, dt) => {
+  useFrame((state) => {
     shaft.uniforms.uTime.value = state.clock.elapsedTime
     shaft.uniforms.uCold.value = sceneState.cold
     floor.uniforms.uCharge.value = sceneState.charge
     backdrop.uniforms.uCharge.value = sceneState.charge
     backdrop.uniforms.uCold.value = sceneState.cold
-    const pos = dustGeo.attributes.position as THREE.BufferAttribute
-    for (let i = 0; i < dust; i++) {
-      let y = pos.getY(i) + dt * 0.04
-      if (y > FLOOR_Y + 7) y = FLOOR_Y
-      pos.setY(i, y)
-    }
-    pos.needsUpdate = true
+    dustTime.value = state.clock.elapsedTime
   })
 
   return (
@@ -155,7 +162,7 @@ export function Atmosphere({ dust = 420 }: { dust?: number }) {
       <mesh material={floor} rotation-x={-Math.PI / 2} position-y={FLOOR_Y + 0.001}>
         <planeGeometry args={[16, 16]} />
       </mesh>
-      <points geometry={dustGeo} material={dustMat} />
+      <points geometry={dustGeo} material={dustMat} frustumCulled={false} />
     </>
   )
 }

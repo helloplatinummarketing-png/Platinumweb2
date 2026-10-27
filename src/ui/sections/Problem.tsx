@@ -24,7 +24,7 @@ export function Problem() {
               <p className="glitch font-mono text-2xl text-ink md:text-4xl" data-text={s.value}>
                 {s.value}
               </p>
-              <p className="micro mt-2 text-[9px] leading-relaxed text-slate-500">{s.label}</p>
+              <p className="micro mt-2 text-[9px] leading-relaxed text-slate-400">{s.label}</p>
             </li>
           ))}
         </ul>

@@ -33,18 +33,38 @@ export function Loader() {
     // Lenis is created in the same commit; wait a tick before pausing it.
     const lock = window.setTimeout(() => getLenis()?.stop(), 0)
 
-    const tl = gsap.timeline({ delay: 0.3 })
+    // The counter climbs to 90% on its own, then waits for the scene to finish
+    // compiling (or 6s, whichever is first) before completing the assembly.
+    const tl = gsap.timeline({ paused: true })
+    const intro = gsap.to(progress, {
+      v: 90,
+      duration: 1.4,
+      ease: 'power2.out',
+      onUpdate: () => {
+        if (count.current) count.current.textContent = String(Math.round(progress.v)).padStart(3, '0')
+        if (bar.current) bar.current.style.transform = `scaleX(${progress.v / 100})`
+      },
+    })
+    const started = performance.now()
+    const wait = window.setInterval(() => {
+      if (sceneState.ready || performance.now() - started > 6000) {
+        window.clearInterval(wait)
+        intro.progress(1)
+        tl.play()
+      }
+    }, 100)
+
     tl.to(progress, {
       v: 100,
-      duration: 2.6,
+      duration: 1.8,
       ease: 'power2.inOut',
       onUpdate: () => {
         if (count.current) count.current.textContent = String(Math.round(progress.v)).padStart(3, '0')
         if (bar.current) bar.current.style.transform = `scaleX(${progress.v / 100})`
       },
     })
-      .to(sceneState, { assemble: 1, duration: 2.4, ease: 'power3.out' }, 0.1)
-      .to(sceneState, { hubSpin: 1, duration: 2.6, ease: 'power2.out' }, 0.2)
+      .to(sceneState, { assemble: 1, duration: 1.8, ease: 'power3.out' }, 0)
+      .to(sceneState, { hubSpin: 1, duration: 2, ease: 'power2.out' }, 0.1)
       .to(root.current, { autoAlpha: 0, duration: 0.8, ease: 'power2.inOut' }, '>-0.1')
       .to(words, { yPercent: 0, duration: 1.1, stagger: 0.06, ease: 'power4.out' }, '<0.2')
       .to(fades, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out' }, '<0.3')
@@ -56,6 +76,8 @@ export function Loader() {
 
     return () => {
       window.clearTimeout(lock)
+      window.clearInterval(wait)
+      intro.kill()
       tl.kill()
       sceneState.assemble = 1
       sceneState.hubSpin = 1

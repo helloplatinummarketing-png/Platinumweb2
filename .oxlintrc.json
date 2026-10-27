@@ -4,5 +4,13 @@
   "rules": {
     "react/rules-of-hooks": "error",
     "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+  },
+  "overrides": [
+    {
+      // R3F frame loops deliberately mutate memoised three.js objects (matrices,
+      // uniforms, scratch vectors) outside React's render, which is the intended pattern.
+      "files": ["src/scene/**"],
+      "rules": { "react/immutability": "off" }
+    }
+  ]
 }

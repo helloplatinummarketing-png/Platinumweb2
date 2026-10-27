@@ -24,7 +24,7 @@ export function Work() {
             <dl className="micro mt-4 grid grid-cols-3 gap-3 border-t border-white/10 pt-4 text-[9px]">
               {cs.meta.map(([k, v]) => (
                 <div key={k}>
-                  <dt className="text-slate-500">{k}</dt>
+                  <dt className="text-slate-400">{k}</dt>
                   <dd className="mt-1 text-ink">{v}</dd>
                 </div>
               ))}

@@ -71,7 +71,7 @@ export function Hud() {
 
       {/* Bottom left: where we are in the story. */}
       <div className="micro absolute bottom-7 left-7 hidden text-slate-400 md:block">
-        <p className="mb-3 text-[9px] text-slate-500 [@media(max-height:760px)]:hidden">{hero.hudLeft}</p>
+        <p className="mb-3 text-[9px] text-slate-400 [@media(max-height:760px)]:hidden">{hero.hudLeft}</p>
         <nav aria-label="Story progress" className="pointer-events-auto flex items-center gap-2">
           {SHOTS.map((s, i) => (
             <button

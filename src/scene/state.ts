@@ -1,4 +1,20 @@
-import * as THREE from 'three'
+/** A plain 3-vector. Keeps this module free of three.js so the DOM bundle stays small. */
+export class Vec3 {
+  x: number
+  y: number
+  z: number
+  constructor(x = 0, y = 0, z = 0) {
+    this.x = x
+    this.y = y
+    this.z = z
+  }
+  set(x: number, y: number, z: number) {
+    this.x = x
+    this.y = y
+    this.z = z
+    return this
+  }
+}
 
 /**
  * Shared, mutable scene state.
@@ -45,12 +61,15 @@ export const sceneState = {
 
   /** Camera, written by the timeline, eased by the rig. */
   camera: {
-    position: new THREE.Vector3(0, 6.2, 9.5),
-    target: new THREE.Vector3(0, 0.6, 0),
+    position: new Vec3(0, 6.2, 9.5),
+    target: new Vec3(0, 0.6, 0),
     fov: 32,
   },
   /** Horizontal framing offset, fraction of frame width. */
   shift: 0.22,
+
+  /** True once the 3D scene has compiled its shaders and drawn its first frame. */
+  ready: false,
 
   /** 0..1 scroll progress through the whole timeline. */
   progress: 0,
@@ -65,14 +84,4 @@ export const readouts = {
   petalsLit: 0,
   /** Per petal lit level 0..1, indexed on the 12-petal scale. */
   petalLevels: new Float32Array(PETAL_COUNT),
-}
-
-/**
- * World-space anchor points the DOM labels track. Core writes petal anchors
- * every frame; the projector turns them into screen positions.
- */
-export const anchors = {
-  petal: Array.from({ length: PETAL_COUNT }, () => new THREE.Vector3()),
-  hub: new THREE.Vector3(0, 0.6, 0),
-  screen: new THREE.Vector3(),
 }

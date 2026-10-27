@@ -48,7 +48,7 @@ export function Pricing() {
                 <span className="headline text-4xl">{tier.setup}</span>
                 <span className="micro ml-2 text-slate-400">+ {tier.monthly}</span>
               </p>
-              <p className="micro mt-3 flex items-center gap-2 text-[9px] text-slate-500" aria-hidden="true">
+              <p className="micro mt-3 flex items-center gap-2 text-[9px] text-slate-400" aria-hidden="true">
                 <span className="flex gap-[3px]">
                   {Array.from({ length: 12 }, (_, i) => (
                     <span key={i} className={`h-2 w-[3px] ${i < tier.petals ? 'bg-gold' : 'bg-white/15'}`} />

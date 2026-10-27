@@ -1,7 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { anchors } from './state'
+import { anchors } from './anchors'
 
 const DESKTOP = '(min-width: 768px)'
 

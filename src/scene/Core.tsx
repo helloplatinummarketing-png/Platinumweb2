@@ -17,7 +17,9 @@ import {
   createPlatinumMaterial,
   GOLD,
 } from './materials'
-import { anchors, PETAL_COUNT, readouts, sceneState } from './state'
+import { anchors } from './anchors'
+import { createRandom } from './random'
+import { PETAL_COUNT, readouts, sceneState } from './state'
 import { PATH_PETALS } from '../timeline/shots'
 
 const v2 = (r: number, y: number) => new THREE.Vector2(r, y)
@@ -93,12 +95,13 @@ export function Core({ petalCount = PETAL_COUNT, interactive = true, children }:
       p.matrix.decompose(pos, q, new THREE.Vector3())
       return new THREE.Matrix4().compose(pos, q, new THREE.Vector3(1, 1, 1))
     })
+    const random = createRandom(12)
     for (let i = 0; i < total; i++) {
-      seeds[i] = Math.random()
+      seeds[i] = random()
       dirs.push(
-        new THREE.Vector3(Math.random() - 0.5, Math.random() * 0.8 + 0.1, Math.random() - 0.5).normalize(),
+        new THREE.Vector3(random() - 0.5, random() * 0.8 + 0.1, random() - 0.5).normalize(),
       )
-      spins.push(new THREE.Euler(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1))
+      spins.push(new THREE.Euler(random() * 2 - 1, random() * 2 - 1, random() * 2 - 1))
     }
     return { panels, rails, total, seeds, dirs, spins, posRot }
   }, [petalCount])
@@ -154,6 +157,8 @@ export function Core({ petalCount = PETAL_COUNT, interactive = true, children }:
   )
   // Spring state for cursor tilt and yaw: [value, velocity].
   const spring = useMemo(() => ({ x: [0, 0], z: [0, 0], y: [0, 0] }), [])
+
+  const toPetal12 = (p: number) => Math.round((p * PETAL_COUNT) / petalCount)
 
   useFrame((state, dt) => {
     const panels = panelsRef.current
@@ -251,7 +256,8 @@ export function Core({ petalCount = PETAL_COUNT, interactive = true, children }:
     lit.needsUpdate = true
     if (hitRef.current) {
       hitRef.current.instanceMatrix.needsUpdate = true
-      hitRef.current.computeBoundingSphere()
+      // Petals never leave this radius, so one generous bound is enough for raycasting.
+      if (!hitRef.current.boundingSphere) hitRef.current.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 6)
     }
 
     // Anchors are authored for 12 petals; map them onto however many we have.
@@ -263,7 +269,6 @@ export function Core({ petalCount = PETAL_COUNT, interactive = true, children }:
     readouts.petalsLit = (litSum * PETAL_COUNT) / petalCount
   })
 
-  const toPetal12 = (p: number) => Math.round((p * PETAL_COUNT) / petalCount)
 
   return (
     <group>
