@@ -39,7 +39,7 @@ export function Nav() {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30">
+    <header className="fixed inset-x-0 top-0 z-30 bg-gradient-to-b from-navy/85 via-navy/40 to-transparent">
       <nav aria-label="Main" className="flex items-center justify-between px-5 py-5 md:px-10">
         <a href="#hero" onClick={go('hero')} aria-label="Platinum Marketing Agency, back to top">
           <Logo />

@@ -37,11 +37,11 @@ export function Hero() {
         </div>
       </div>
 
-      <ul aria-label="Live activity" className="hidden md:block">
+      <ul aria-label="Live activity" className="anchor-list hidden md:block" data-hero-chips>
         {hero.events.map((e) => (
           <li key={e.tag}>
             <Anchored to={`petal:${e.petal}`} reveal="fade" bodyClassName="glass px-4 py-3" className="hero-chip">
-              <span data-hero-fade className="block">
+              <span className="block">
                 <span className="micro flex items-center gap-2 text-gold">
                   <span className="pulse-dot" aria-hidden="true" />
                   {e.tag}

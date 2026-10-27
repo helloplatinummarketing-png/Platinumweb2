@@ -1,6 +1,12 @@
+import 'lenis/dist/lenis.css'
+import { useLayoutEffect } from 'react'
+import { capabilities, mode } from './capabilities'
 import { Scene } from './scene/Scene'
+import { sceneState } from './scene/state'
+import { SHOTS, endState } from './timeline/shots'
 import { useMasterTimeline } from './timeline/useMasterTimeline'
 import { Hud } from './ui/Hud'
+import { Loader } from './ui/Loader'
 import { Nav } from './ui/Nav'
 import { PetalTooltip } from './ui/PetalTooltip'
 import { Faq } from './ui/sections/Faq'
@@ -15,15 +21,46 @@ import { Stats } from './ui/sections/Stats'
 import { Work } from './ui/sections/Work'
 import { WhyUs } from './ui/sections/WhyUs'
 
+/** Reduced motion: hold the fully running core in the hero framing. */
+function applyStillState() {
+  const lit = endState(SHOTS.find((s) => s.id === 'whyus')!)
+  Object.assign(sceneState, {
+    unfold: 1,
+    litCount: 12,
+    charge: lit.charge,
+    glow: 1,
+    hubSpin: 0,
+    shift: 0.22,
+  })
+  sceneState.camera.position.set(0, 4.6, 10.5)
+  sceneState.camera.target.set(0, 0.3, 0)
+  sceneState.camera.fov = 34
+}
+
+if (mode === 'static') applyStillState()
+
 export default function App() {
-  useMasterTimeline(true)
+  const full = mode === 'full'
+  useMasterTimeline(full)
+
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle('static-page', !full)
+  }, [full])
+
   return (
     <>
       <div className="fixed inset-0" aria-hidden="true">
-        <Scene />
+        {mode === 'poster' ? (
+          <img src="/poster.jpg" alt="" className="h-full w-full object-cover opacity-80" />
+        ) : (
+          <Scene mobile={capabilities.mobile} still={mode === 'static'} />
+        )}
       </div>
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-gold focus:px-4 focus:py-2 focus:text-navy">
+        Skip to content
+      </a>
       <Nav />
-      <main className="relative">
+      <main id="main" className="relative">
         <Hero />
         <Stats />
         <Problem />
@@ -36,8 +73,9 @@ export default function App() {
         <FinalCta />
         <Footer />
       </main>
-      <Hud />
-      <PetalTooltip />
+      {full && <Hud />}
+      {full && !capabilities.mobile && <PetalTooltip />}
+      {full && <Loader />}
     </>
   )
 }

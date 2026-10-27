@@ -12,7 +12,7 @@ export function WhyUs() {
         </p>
         <MaskText as="h2" id="whyus-title" text={whyUs.title} className="headline mt-5 text-[clamp(2.4rem,min(6vw,11svh),6rem)]" />
       </div>
-      <ul className="mt-8 grid grid-cols-2 gap-5 px-6 md:mt-0 md:block md:p-0">
+      <ul className="anchor-list mt-8 grid grid-cols-2 gap-5 px-6 md:mt-0 md:block md:p-0">
         {whyUs.points.map((p) => (
           <li key={p.title}>
             <Anchored to={`petal:${p.petal}`} bodyClassName="max-w-[230px]">

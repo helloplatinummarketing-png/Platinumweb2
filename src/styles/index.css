@@ -47,6 +47,11 @@ body {
     height: 100svh;
     overflow: hidden;
   }
+  @media (max-width: 767px) {
+    .shot__content {
+      text-shadow: 0 1px 14px rgba(2, 6, 23, 0.95);
+    }
+  }
   /* Overlays never block the canvas; interactive children opt back in. */
   .shot__content {
     pointer-events: none;
@@ -408,4 +413,35 @@ body {
       transition: none;
     }
   }
+}
+
+/* Static page (reduced motion / no WebGL) must win over layout utilities, so it sits outside the layers. */
+.static-page .anchor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-content: start;
+  gap: 2rem;
+  height: auto;
+  padding: 2rem 1.5rem 6rem;
+}
+@media (min-width: 768px) {
+  .static-page .anchor-list {
+    padding: 2rem 4rem 6rem;
+  }
+}
+.static-page .process-title {
+  position: relative;
+  inset: auto;
+  padding: 7rem 1.5rem 0;
+}
+@media (min-width: 768px) {
+  .static-page .process-title {
+    padding: 7rem 4rem 0;
+  }
+}
+.static-page [data-shot='stats'] .shot__content {
+  padding-top: 6rem;
+}
+.static-page .shot__content {
+  text-shadow: 0 1px 14px rgba(2, 6, 23, 0.95);
 }

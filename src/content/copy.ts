@@ -51,7 +51,7 @@ export const stats = [
   { value: 5, prefix: '', suffix: ' Days', label: 'Average site delivery', petal: 2 },
   { value: 24, prefix: '', suffix: '/7', label: 'Automation uptime', petal: 4 },
   { value: 0, prefix: '£', suffix: '', label: 'Cost to book a demo', petal: 7 },
-  { value: 30, prefix: '', suffix: ' Days', label: 'Notice to cancel', petal: 10 },
+  { value: 30, prefix: '', suffix: ' Days', label: 'Notice to cancel', petal: 11 },
 ]
 
 export const problem = {

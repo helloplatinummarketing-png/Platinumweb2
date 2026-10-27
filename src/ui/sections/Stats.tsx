@@ -8,7 +8,7 @@ export function Stats() {
       <h2 id="stats-title" className="sr-only">
         Platinum in numbers
       </h2>
-      <ul className="grid h-full grid-cols-2 content-end gap-x-6 gap-y-8 px-6 pb-28 md:block md:p-0">
+      <ul className="anchor-list grid h-full grid-cols-2 content-end gap-x-6 gap-y-8 px-6 pb-28 md:block md:p-0">
         {stats.map((s) => (
           <li key={s.label}>
             <Anchored to={`petal:${s.petal}`}>

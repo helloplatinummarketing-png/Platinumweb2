@@ -18,10 +18,10 @@ export function Solution() {
             className="headline mt-5 max-w-[16ch] text-[clamp(2.2rem,min(5vw,9svh),5rem)]"
           />
         </div>
-        <ol className="grid gap-3 md:max-w-[58%] md:grid-cols-3">
+        <ol className="grid gap-3 max-md:[&>li]:[grid-area:1/1] md:max-w-[58%] md:grid-cols-3">
           {solution.stages.map((stage, k) => (
             <li key={stage.title} data-step={k}>
-              <GlassCard className="h-full p-4 md:p-5">
+              <GlassCard className="h-full p-4 max-md:bg-navy/70 md:p-5">
                 <p className="micro flex justify-between text-gold">
                   <span>{stage.when}</span>
                   <span className="text-slate-500">
