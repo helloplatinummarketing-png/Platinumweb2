@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Gold sampled from platinummarketingagency.co.uk */
+  --color-gold: #d4af37;
+  --color-navy: #020617;
+  --color-platinum: #c9ccd1;
+  --color-graphite: #2a2d33;
+  --color-ink: #f8fafc;
+  --font-sans: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #020617;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Soft radial gradient behind the hub; the canvas is transparent above it. */
+.stage-backdrop {
+  background:
+    radial-gradient(60% 55% at 50% 48%, rgba(212, 175, 55, 0.07) 0%, rgba(30, 41, 70, 0.35) 35%, rgba(2, 6, 23, 0) 70%),
+    #020617;
+}
