@@ -45,6 +45,7 @@ export interface PanelUniforms {
   uTime: { value: number }
   uFlicker: { value: number }
   uCold: { value: number }
+  uGlow: { value: number }
   uGold: { value: THREE.Color }
   uColdColor: { value: THREE.Color }
 }
@@ -62,6 +63,7 @@ export function createPanelMaterial() {
     uTime: { value: 0 },
     uFlicker: { value: 0 },
     uCold: { value: 0 },
+    uGlow: { value: 1 },
     uGold: { value: GOLD.clone() },
     uColdColor: { value: COLD.clone() },
   }
@@ -101,6 +103,7 @@ export function createPanelMaterial() {
         uniform float uTime;
         uniform float uFlicker;
         uniform float uCold;
+        uniform float uGlow;
         uniform vec3 uGold;
         uniform vec3 uColdColor;
         varying float vLit;
@@ -130,7 +133,7 @@ export function createPanelMaterial() {
         }
         float shimmer = 0.85 + 0.15 * sin(uTime * 2.0 + vSeed * 6.2831);
         float cell = (1.0 - lines) * (0.55 + 0.45 * fract(vSeed * 7.31));
-        vec3 gold = uGold * vLit * (0.08 + cell) * shimmer * 1.7;
+        vec3 gold = uGold * vLit * (0.08 + cell) * shimmer * 1.7 * uGlow;
         vec3 cold = uColdColor * uCold * (1.0 - lines) * 0.35 * step(0.6, vSeed + 0.3 * sin(uTime * 3.0 + vSeed * 20.0));
         totalEmissiveRadiance += (gold + cold) * flick;`,
       )

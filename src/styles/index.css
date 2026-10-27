@@ -31,3 +31,85 @@ body {
     radial-gradient(60% 55% at 50% 48%, rgba(212, 175, 55, 0.07) 0%, rgba(30, 41, 70, 0.35) 35%, rgba(2, 6, 23, 0) 70%),
     #020617;
 }
+
+/* ---------- Shots: each section is one camera shot ---------- */
+.shot {
+  position: relative;
+}
+.shot--pinned {
+  height: calc(var(--len-m) * 100svh);
+}
+@media (min-width: 768px) {
+  .shot--pinned {
+    height: calc(var(--len-d) * 100svh);
+  }
+}
+.shot--overlap {
+  margin-top: -100svh;
+}
+.shot--pinned > .shot__content {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+/* Overlays never block the canvas; interactive children opt back in. */
+.shot__content {
+  pointer-events: none;
+}
+.shot__content a,
+.shot__content button,
+.shot__content [data-interactive] {
+  pointer-events: auto;
+}
+
+/* Reduced motion / no WebGL: a normal, readable page. */
+.static-page .shot--pinned,
+.static-page .shot--flow {
+  height: auto;
+  margin-top: 0;
+}
+.static-page .shot--pinned > .shot__content {
+  position: relative;
+  height: auto;
+  min-height: 100svh;
+  overflow: visible;
+}
+
+/* ---------- Mask reveal ---------- */
+.mask-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.mask-word__inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* ---------- Micro labels ---------- */
+.micro {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.label-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-gold);
+}
+.label-line::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+.headline {
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}

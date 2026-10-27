@@ -1,61 +1,44 @@
-import { useState } from 'react'
 import { Scene } from './scene/Scene'
-import { sceneState, type SceneState } from './scene/state'
+import * as copy from './content/copy'
+import { SHOTS } from './timeline/shots'
+import { useMasterTimeline } from './timeline/useMasterTimeline'
+import { MaskText } from './ui/MaskText'
+import { ShotSection } from './ui/ShotSection'
 
-// Start the preview mid-ignition so materials and bloom are visible straight away.
-Object.assign(sceneState, { unfold: 0.9, litCount: 4, charge: 0.4 })
-
-type NumericKey = { [K in keyof SceneState]: SceneState[K] extends number ? K : never }[keyof SceneState]
-
-const CONTROLS: { key: NumericKey; min: number; max: number; step: number }[] = [
-  { key: 'assemble', min: 0, max: 1, step: 0.01 },
-  { key: 'unfold', min: 0, max: 1, step: 0.01 },
-  { key: 'litCount', min: 0, max: 12, step: 0.05 },
-  { key: 'charge', min: 0, max: 1, step: 0.01 },
-  { key: 'scatter', min: 0, max: 1, step: 0.01 },
-  { key: 'flicker', min: 0, max: 1, step: 0.01 },
-  { key: 'cold', min: 0, max: 1, step: 0.01 },
-  { key: 'hubSpin', min: 0, max: 4, step: 0.05 },
-]
-
-/** Step 2 review panel: drives the shared scene state by hand. Removed once the timeline lands. */
-function CorePreviewPanel() {
-  const [values, setValues] = useState(() => Object.fromEntries(CONTROLS.map((c) => [c.key, sceneState[c.key]])))
-  return (
-    <div className="fixed top-4 right-4 z-10 w-64 space-y-2 border border-white/10 bg-white/5 p-4 font-mono text-[10px] tracking-widest text-slate-300 uppercase backdrop-blur-md">
-      <div className="mb-3 text-gold">Platinum Core / Preview</div>
-      {CONTROLS.map(({ key, min, max, step }) => (
-        <label key={key} className="block">
-          <span className="flex justify-between">
-            {key}
-            <span className="text-ink">{Number(values[key]).toFixed(2)}</span>
-          </span>
-          <input
-            className="w-full accent-[#d4af37]"
-            type="range"
-            min={min}
-            max={max}
-            step={step}
-            value={values[key]}
-            onChange={(e) => {
-              const v = Number(e.target.value)
-              sceneState[key] = v
-              setValues((prev) => ({ ...prev, [key]: v }))
-            }}
-          />
-        </label>
-      ))}
-    </div>
-  )
+// Step 3: placeholder copy per shot to prove the camera timeline.
+const PLACEHOLDER: Record<string, { label: string; title: string }> = {
+  hero: { label: copy.hero.eyebrow, title: copy.hero.title.join(' ') },
+  stats: { label: 'STATS', title: 'Signal' },
+  problem: copy.problem,
+  solution: copy.solution,
+  work: copy.work,
+  pricing: copy.pricing,
+  process: copy.process,
+  whyus: copy.whyUs,
+  faq: copy.faq,
+  cta: copy.finalCta,
+  footer: { label: copy.footer.location, title: 'Footer' },
 }
 
 export default function App() {
+  useMasterTimeline(true)
   return (
     <>
       <div className="fixed inset-0">
         <Scene />
       </div>
-      <CorePreviewPanel />
+      <main className="relative">
+        {SHOTS.map((s) => (
+          <ShotSection key={s.id} id={s.id} className={s.pin ? '' : 'min-h-[160svh]'}>
+            <div className="flex h-full flex-col justify-center px-6 py-24 md:px-16">
+              <p className="micro label-line" data-fade>
+                {PLACEHOLDER[s.id].label}
+              </p>
+              <MaskText as="h2" className="headline mt-6 max-w-3xl text-5xl md:text-7xl" text={PLACEHOLDER[s.id].title} />
+            </div>
+          </ShotSection>
+        ))}
+      </main>
     </>
   )
 }

@@ -1,16 +1,20 @@
+import * as THREE from 'three'
+
 /**
  * Shared, mutable scene state.
  *
  * The scroll timeline (and UI hovers) write here; the 3D scene reads it every
- * frame inside useFrame. Keeping it outside React state means scrubbing the
- * timeline never triggers a re-render.
+ * frame inside useFrame and the HUD polls it. Keeping it outside React state
+ * means scrubbing the timeline never triggers a re-render. This object is the
+ * single value both the 3D scene and the DOM read, which is what keeps them
+ * one unit.
  */
 export const PETAL_COUNT = 12
 
 export const sceneState = {
   /** 0 = petals closed into a bud, 1 = fully open. Staggered per petal. */
   unfold: 0,
-  /** Number of petals switched on, fractional values ignite the next petal partway. */
+  /** Petals switched on, out of 12. Fractional values ignite the next petal partway. */
   litCount: 0,
   /** 0..1, panels drift apart from their petals (the "problem" shot). */
   scatter: 0,
@@ -22,10 +26,51 @@ export const sceneState = {
   cold: 0,
   /** Multiplier on the idle hub spin. */
   hubSpin: 1,
-  /** Overall glow of the hub core, 0..1. */
+  /** Glow of the hub core and scene warmth, 0..1. */
   charge: 0,
+  /** Overall brightness of lit panels (dims the machine to idle in the footer). */
+  glow: 1,
+  /** 0..1, how far the gold light path has travelled (process shot). */
+  path: 0,
+  /** 0..1, visibility of the floating case-study screen (work shot). */
+  screen: 0,
+  /** Extra yaw of the whole core, radians. */
+  coreYaw: 0,
+
+  /** UI overrides: a pricing hover lights N petals and turns the core towards the card. */
+  litOverride: -1,
+  yawOverride: 0,
   /** Petal index under the cursor, or -1. */
   hoveredPetal: -1,
+
+  /** Camera, written by the timeline, eased by the rig. */
+  camera: {
+    position: new THREE.Vector3(0, 6.2, 9.5),
+    target: new THREE.Vector3(0, 0.6, 0),
+    fov: 32,
+  },
+  /** Horizontal framing offset, fraction of frame width. */
+  shift: 0.22,
+
+  /** 0..1 scroll progress through the whole timeline. */
+  progress: 0,
+  /** Index into SHOTS of the shot currently on screen. */
+  shot: 0,
 }
 
 export type SceneState = typeof sceneState
+
+/** Petal lit level as the scene currently resolves it (written by Core, read by the HUD). */
+export const readouts = {
+  petalsLit: 0,
+}
+
+/**
+ * World-space anchor points the DOM labels track. Core writes petal anchors
+ * every frame; the projector turns them into screen positions.
+ */
+export const anchors = {
+  petal: Array.from({ length: PETAL_COUNT }, () => new THREE.Vector3()),
+  hub: new THREE.Vector3(0, 0.6, 0),
+  screen: new THREE.Vector3(),
+}

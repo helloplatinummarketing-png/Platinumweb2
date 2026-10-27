@@ -6,7 +6,9 @@ import {
   buildPetalRails,
   createPanelGeometry,
   PETAL,
+  PETAL_LENGTH,
   petalMatrix,
+  petalWidthAt,
 } from './Petal'
 import {
   createBrushedTexture,
@@ -15,7 +17,8 @@ import {
   createPlatinumMaterial,
   GOLD,
 } from './materials'
-import { PETAL_COUNT, sceneState } from './state'
+import { anchors, PETAL_COUNT, readouts, sceneState } from './state'
+import { PATH_PETALS } from '../timeline/shots'
 
 const v2 = (r: number, y: number) => new THREE.Vector2(r, y)
 
@@ -33,9 +36,13 @@ const PEDESTAL_PROFILE = [
 
 interface CoreProps {
   petalCount?: number
+  /** Cursor tilt on/off (off for reduced motion). */
+  interactive?: boolean
 }
 
-export function Core({ petalCount = PETAL_COUNT }: CoreProps) {
+export function Core({ petalCount = PETAL_COUNT, interactive = true }: CoreProps) {
+  const rootRef = useRef<THREE.Group>(null)
+  const hitRef = useRef<THREE.InstancedMesh>(null)
   const panelsRef = useRef<THREE.InstancedMesh>(null)
   const railsRef = useRef<THREE.InstancedMesh>(null)
   const gearRef = useRef<THREE.Group>(null)
@@ -64,6 +71,8 @@ export function Core({ petalCount = PETAL_COUNT }: CoreProps) {
       hingeGeo: new THREE.CylinderGeometry(0.055, 0.055, 0.22, 20),
       toothGeo: new THREE.BoxGeometry(0.035, 0.03, 0.09),
       boltGeo: new THREE.CylinderGeometry(0.022, 0.022, 0.02, 12),
+      hitGeo: new THREE.BoxGeometry(PETAL_LENGTH, 0.35, petalWidthAt(PETAL_LENGTH)).translate(PETAL_LENGTH / 2, 0, 0),
+      hitMat: new THREE.MeshBasicMaterial({ visible: false }),
       lensGeo: new THREE.SphereGeometry(0.2, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2),
     }
   }, [])
@@ -135,6 +144,14 @@ export function Core({ petalCount = PETAL_COUNT }: CoreProps) {
   const lift = useMemo(() => new THREE.Matrix4(), [])
   const off = useMemo(() => new THREE.Vector3(), [])
   const euler = useMemo(() => new THREE.Euler(), [])
+  const anchorLocal = useMemo(() => new THREE.Vector3(PETAL_LENGTH * 0.82, 0.06, 0), [])
+  const petalAnchor = useMemo(() => Array.from({ length: petalCount }, () => new THREE.Vector3()), [petalCount])
+  const pathPetals = useMemo(
+    () => PATH_PETALS.map((p) => Math.round((p * petalCount) / PETAL_COUNT) % petalCount),
+    [petalCount],
+  )
+  // Spring state for cursor tilt and yaw: [value, velocity].
+  const spring = useMemo(() => ({ x: [0, 0], z: [0, 0], y: [0, 0] }), [])
 
   useFrame((state, dt) => {
     const panels = panelsRef.current
@@ -143,10 +160,30 @@ export function Core({ petalCount = PETAL_COUNT }: CoreProps) {
     const s = sceneState
     const t = state.clock.elapsedTime
     const k = 1 - Math.exp(-dt * 6)
+    const step = Math.min(dt, 1 / 30)
+
+    // Cursor tilt and shot / pricing yaw on a soft spring.
+    const root = rootRef.current
+    if (root) {
+      const goals = {
+        x: interactive ? -state.pointer.y * 0.07 : 0,
+        z: interactive ? -state.pointer.x * 0.06 : 0,
+        y: s.coreYaw + s.yawOverride,
+      }
+      for (const axis of ['x', 'y', 'z'] as const) {
+        const sp = spring[axis]
+        sp[1] += (goals[axis] - sp[0]) * 28 * step
+        sp[1] *= Math.exp(-7 * step)
+        sp[0] += sp[1] * step
+      }
+      root.rotation.set(spring.x[0], spring.y[0], spring.z[0])
+      root.updateMatrixWorld()
+    }
 
     assets.panel.uniforms.uTime.value = t
     assets.panel.uniforms.uFlicker.value = s.flicker
     assets.panel.uniforms.uCold.value = s.cold
+    assets.panel.uniforms.uGlow.value = s.glow
     assets.lens.emissiveIntensity = 0.2 + s.charge * 1.6
 
     if (gearRef.current) gearRef.current.rotation.y += dt * 0.35 * s.hubSpin
@@ -155,15 +192,25 @@ export function Core({ petalCount = PETAL_COUNT }: CoreProps) {
     const per = layout.panels.length
     const railsPer = layout.rails.length
     const railGrow = THREE.MathUtils.smoothstep(s.assemble, 0.15, 0.85)
+    // Lit counts are authored out of 12; scale for the simplified mobile core.
+    const litTotal = (s.litOverride >= 0 ? s.litOverride : s.litCount) * (petalCount / PETAL_COUNT)
+    let litSum = 0
 
     for (let p = 0; p < petalCount; p++) {
       const stagger = (p / petalCount) * 0.35
       const pu = THREE.MathUtils.smoothstep(THREE.MathUtils.clamp(s.unfold * 1.35 - stagger, 0, 1), 0, 1)
-      petalLit[p] += (THREE.MathUtils.clamp(s.litCount - p, 0, 1) - petalLit[p]) * k
-      petalLift[p] += ((s.hoveredPetal === p ? 1 : 0) - petalLift[p]) * k
+      const pathIndex = pathPetals.indexOf(p)
+      const pathLit = pathIndex >= 0 ? THREE.MathUtils.clamp((s.path - pathIndex / 3) * 3, 0, 1) : 0
+      const litGoal = Math.max(THREE.MathUtils.clamp(litTotal - p, 0, 1), pathLit)
+      petalLit[p] += (litGoal - petalLit[p]) * k
+      litSum += petalLit[p]
+      petalLift[p] += ((s.hoveredPetal === toPetal12(p) ? 1 : 0) - petalLift[p]) * k
 
       petalMatrix(p, petalCount, pu, M)
       M.multiply(lift.makeTranslation(0, petalLift[p] * 0.09, 0))
+      hitRef.current?.setMatrixAt(p, M)
+      petalAnchor[p].copy(anchorLocal).applyMatrix4(M)
+      if (root) petalAnchor[p].applyMatrix4(root.matrixWorld)
 
       for (let r = 0; r < railsPer; r++) {
         tmp.copy(M).multiply(scale.makeScale(railGrow, railGrow, railGrow)).multiply(layout.rails[r])
@@ -200,12 +247,23 @@ export function Core({ petalCount = PETAL_COUNT }: CoreProps) {
     panels.instanceMatrix.needsUpdate = true
     rails.instanceMatrix.needsUpdate = true
     lit.needsUpdate = true
+    if (hitRef.current) {
+      hitRef.current.instanceMatrix.needsUpdate = true
+      hitRef.current.computeBoundingSphere()
+    }
+
+    // Anchors are authored for 12 petals; map them onto however many we have.
+    for (let i = 0; i < PETAL_COUNT; i++) anchors.petal[i].copy(petalAnchor[Math.floor((i * petalCount) / PETAL_COUNT)])
+    readouts.petalsLit = (litSum * PETAL_COUNT) / petalCount
   })
+
+  const toPetal12 = (p: number) => Math.round((p * PETAL_COUNT) / petalCount)
 
   return (
     <group>
-      <mesh geometry={assets.hubGeo} material={assets.platinum} />
       <mesh geometry={assets.pedestalGeo} material={assets.graphite} />
+      <group ref={rootRef}>
+      <mesh geometry={assets.hubGeo} material={assets.platinum} />
       <mesh geometry={assets.lensGeo} material={assets.lens} position={[0, 0.46, 0]} scale={[1, 0.45, 1]} />
 
       <group ref={gearRef}>
@@ -227,6 +285,20 @@ export function Core({ petalCount = PETAL_COUNT }: CoreProps) {
         args={[panelGeo, assets.panel.material, layout.total]}
         frustumCulled={false}
       />
+      {interactive && (
+        <instancedMesh
+          ref={hitRef}
+          args={[assets.hitGeo, assets.hitMat, petalCount]}
+          onPointerMove={(e) => {
+            e.stopPropagation()
+            if (e.instanceId !== undefined) sceneState.hoveredPetal = toPetal12(e.instanceId)
+          }}
+          onPointerOut={() => {
+            sceneState.hoveredPetal = -1
+          }}
+        />
+      )}
+      </group>
     </group>
   )
 }
