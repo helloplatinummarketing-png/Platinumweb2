@@ -1,78 +1,107 @@
 # Platinum Marketing Agency — Kenya website
 
-The marketing site for Kenyan service businesses: websites, WhatsApp automations
-and AI visibility. Built from the Kenya website brief (1 Nov 2026).
+The marketing site for Kenyan service businesses: Websites, WhatsApp Automations and
+AI Visibility (GEO). All page copy and prices come from [`BRIEF.md`](BRIEF.md).
 
-Vite · TypeScript · React (build time only) · three.js · Tailwind v4.
-
-Pages are pre-rendered to static HTML, so search engines and AI tools can read
-every page without running JavaScript, and the text appears before any 3D loads.
-No React runs in the browser.
-
-## The 3D stage
-
-A fixed canvas plays a scroll-driven film behind the page. Everything is generated
-in code, with no model files, and loads as one lazy chunk of about 160 kB (gzipped).
-
-Any element with `data-act="name"` is a chapter (`src/scene/stage.ts`). The acts are
-`rise` and `lost` (`homeland.ts`), then `websites`, `whatsapp`, `ai` and `gate`
-(`modules.ts`). The home page plays them all. Inner pages play one behind their hero.
-On the home page, a `.transit` spacer at the end of a chapter is the empty scroll
-where the camera flies to the next act.
-
-Visitors get the still version (`public/poster.jpg` and normal sections) with
-reduced motion, data saver, 2G, under 3 GB of memory, under 4 CPU cores, no WebGL or
-a software GPU. If the frame rate stays low, a watchdog lowers quality and then
-switches to the still version.
-
-| Add to the URL | What it does                                                    |
-| -------------- | --------------------------------------------------------------- |
-| `?motion`      | Skips the device checks, e.g. with Windows animations turned off |
-| `?forcewebgl`  | Also allows software GPUs and turns off the frame-rate watchdog |
-| `?reduced`     | Forces the still version                                        |
-| `?nowebgl`     | Forces the still version                                        |
+Next.js (App Router) · TypeScript · Tailwind CSS · three.js with React Three Fiber and
+drei · GSAP ScrollTrigger · Lenis · zod · Resend.
 
 ## Run it
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # type-check + static site in dist/
-npm run preview    # serve dist/
-npm run lint       # oxlint
+cp .env.example .env.local   # only needed to test the contact form
+npm run dev                  # http://localhost:3000
+npm run build && npm start   # production build
+npm run lint
 ```
 
-### Deploy
+## Edit the content
 
-The Vercel project `platinum6/platinum-3d` is connected to
-[`helloplatinummarketing-png/Platinumweb2`](https://github.com/helloplatinummarketing-png/Platinumweb2).
-Every push to `main` deploys to production; pushes to other branches get preview
-URLs. No environment variables are needed.
+Nothing here requires touching a component.
 
-## Edit the site
+| What | Where |
+| --- | --- |
+| Domain, email, phone, WhatsApp number and message, Calendly, map, GA4 | `config/site.ts` |
+| Stats bar numbers | `config/stats.ts` |
+| Home page copy, trust badge, example dashboard, testimonials | `content/home.ts` |
+| Service copy, prices, FAQs | `content/websites.ts`, `content/automations.ts`, `content/geo.ts` |
+| About copy, team, values | `content/about.ts` |
+| Contact copy and dropdown options | `content/contact.ts` |
+| Pricing page copy and bundle banner | `content/pricing.ts` |
+| Navigation and footer | `content/navigation.ts` |
+| Colours | The variables at the top of `app/globals.css`. The 3D reads most of these too |
 
-| What                                         | Where                 |
-| -------------------------------------------- | --------------------- |
-| Headlines, body text, prices, FAQs, team     | `src/content/copy.ts` |
-| Domain, phone, WhatsApp, booking, form, analytics | `src/content/site.ts` |
-| Colours and shared styles                    | `src/styles/index.css` |
-| Page layouts                                 | `src/pages/*`         |
-| Meta tags and schema markup                  | `src/render.tsx`      |
+Some 3D materials hard-code the palette and need changing by hand if the colours change:
+`ServiceObjects.tsx`, `ServiceStage.tsx`, `PhoneBody.tsx`, `DevicePairCanvas.tsx`,
+`NairobiMapCanvas.tsx` and the bubble and site drawings in `screens.ts`.
 
-## To do before launch
+## Placeholders to replace
 
-Add these in `src/content/site.ts`. The site shows a fallback until each is set.
+Search the code for `TODO(Victor)` to find all of these.
 
-- `url`: confirm .co.ke or .com
-- `phone` and `phoneE164`: Kenya phone number
-- `whatsapp`: WhatsApp Business number. Until then, the floating button opens the contact form
-- `bookingUrl`: Calendly or similar. It embeds on the contact page
-- `formEndpoint`: Google Apps Script or a form service. Until then, the form opens the visitor's email app
-- `gaId`: Google Analytics ID. Setting it also turns on the cookie banner
+| Item | File | Until it's replaced |
+| --- | --- | --- |
+| Domain: `.co.ke` or `.com` | `config/site.ts` | Canonical URLs, schema and sitemap use `.co.ke` |
+| Public email address | `config/site.ts` | Uses the existing Gmail address |
+| Kenya phone number | `config/site.ts` | Shows `+254 7XX XXX XXX`, with no link |
+| WhatsApp Business number | `config/site.ts` | **WhatsApp buttons don't work.** The number is invalid on purpose |
+| Prefilled WhatsApp message | `config/site.ts` | Uses a suggested message |
+| Calendly URL | `config/site.ts` | Contact page shows a marked placeholder |
+| GA4 ID (optional) | `config/site.ts` | No Google Analytics and no cookie banner |
+| Stats bar numbers | `config/stats.ts` | Show "X" with a Placeholder tag. Real numbers count up on scroll |
+| Google rating | `content/home.ts` | Shows "★ 5.0 · Google Reviews" with a Placeholder tag |
+| Testimonials | `content/home.ts` | Three marked placeholder cards. Also delete the tag in `Testimonials.tsx` |
+| Example dashboard numbers | `content/home.ts` | Illustrative only. The panel says it's an example |
+| Team photos and bios | `content/about.ts` | Placeholder image and "One-line bio goes here." |
+| Final logo | `components/layout/Logo.tsx`, `app/icon.svg` | The existing sunburst mark, in brushed platinum |
 
-Add or replace this content:
+## Contact form
 
-- The real Platinum logo. The header currently uses `public/favicon.svg` and a text wordmark
-- Testimonials and stats in `home.proof` in `copy.ts`. These are placeholders
-- Team photos and bios in `about.team` in `copy.ts`. Bios are drafts
-- `public/og-image.jpg`, the image shown when the site is shared on social media or WhatsApp. The current one is a text-only stand-in without the logo
+The form posts to `app/api/contact/route.ts`, which validates with zod and ignores anything
+that fills in the hidden honeypot field. It reports success if at least one destination
+receives the enquiry. Set these in `.env.local` and in Vercel:
+
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key |
+| `CONTACT_TO_EMAIL` | Where enquiries go |
+| `CONTACT_FROM_EMAIL` | Sender. Must be on a domain verified in Resend |
+| `GOOGLE_SHEETS_WEBHOOK_URL` | Optional: also posts each enquiry as JSON to this URL |
+
+**With none of these set, the form shows an error and no enquiry is delivered.**
+
+## Deploy to Vercel
+
+1. Import the repository in Vercel. It detects Next.js, so no build settings are needed.
+2. Add the environment variables above, for Production and Preview.
+3. Set the final domain in `config/site.ts` and add it in Vercel under Domains.
+4. In Vercel, turn on Web Analytics if you want it. The tracking code only loads on Vercel.
+
+Every branch gets a preview URL, and pushes to the production branch (`main`) go live.
+
+## How the 3D works
+
+- **One globe component:** `components/three/Globe.tsx`. `GlobeHost.tsx` keeps a single instance
+  fixed behind the home page, and one scroll timeline drives it through `globeControls.ts`.
+  About uses the same component in a calm mode.
+- **Scroll state:** timelines write to plain objects (`globeControls`, `morphState`, `sceneState`)
+  and render loops read them, so scrolling doesn't re-render React.
+- **Shared canvas:** the home service cards use one canvas with drei `<View>`s (`ServiceStage.tsx`).
+- **Loading:** every canvas is lazy-loaded with `next/dynamic` and mounts after first paint
+  (`useDeviceProfile.ts`). Canvases pause while off-screen.
+- **Pinned sections need a parent element.** GSAP wraps a pinned element in its own spacer. Without
+  a stable parent `<div>` around the pinned section, React crashes when leaving the page.
+- **Land mask:** `npm run landmask` regenerates `public/textures/land-mask.png` from public-domain
+  Natural Earth data. It only needs re-running to change the resolution.
+
+### Device fallbacks (`components/three/device.ts`)
+
+| Condition | What the visitor gets |
+| --- | --- |
+| Phones, or 4 or fewer CPU cores, or 4 GB of memory or less | 3D starts on first touch or scroll, or after 5 seconds. About 60% fewer particles, no bloom, resolution capped at 1.5x |
+| Frame rate drops on the home globe | Bloom turns off and resolution falls to 1x |
+| `prefers-reduced-motion` | No pinning, morphing or smooth scroll. Static end states and normal text |
+| No WebGL, software graphics, data saver or 2G | No 3D. Gradient posters and all the normal text |
+
+For testing, add `?forcewebgl` to allow software graphics, or `?nowebgl` to turn the 3D off.
