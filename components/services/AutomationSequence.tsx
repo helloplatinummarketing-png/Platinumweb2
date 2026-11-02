@@ -70,6 +70,7 @@ export function AutomationSequence() {
   }, [])
 
   return (
+    <div>{/* GSAP wraps the pinned section, so React needs this stable parent to remove. */}
     <section ref={section} data-pinned={pinned || undefined} className={`relative flex flex-col overflow-hidden bg-bg lg:flex-row lg:items-center ${pinned ? 'min-h-svh' : 'py-20'}`}>
       <div className="wrap relative z-10 pt-20 lg:grid lg:grid-cols-2 lg:pt-0">
         <div>
@@ -100,5 +101,6 @@ export function AutomationSequence() {
         </div>
       )}
     </section>
+    </div>
   )
 }

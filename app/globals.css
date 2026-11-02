@@ -107,6 +107,30 @@ html.lenis body {
     text-wrap: balance;
   }
 
+  .form-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  /* 16px text stops phones zooming in when a field is tapped. */
+  .form-field {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.75rem;
+    background: var(--bg);
+    padding: 0.5rem 0.875rem;
+    font-size: 1rem;
+    color: var(--platinum);
+  }
+
+  .form-field[aria-invalid='true'] {
+    border-color: #ff8a8a;
+  }
+
   .display-page {
     font-family: var(--font-display);
     font-size: clamp(2.4rem, 5.6vw, 5rem);

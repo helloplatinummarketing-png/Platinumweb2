@@ -53,6 +53,7 @@ export function TryItMap() {
   }, [])
 
   return (
+    <div>{/* GSAP wraps the pinned section, so React needs this stable parent to remove. */}
     <section ref={section} className="relative flex min-h-svh flex-col overflow-hidden bg-bg lg:flex-row lg:items-center">
       <div className="wrap relative z-10 grid pt-20 lg:grid-cols-[1fr_1.15fr] lg:pt-0">
         <div>
@@ -70,5 +71,6 @@ export function TryItMap() {
         {profile?.webgl && <NairobiMapCanvas profile={profile} inView={inView} />}
       </div>
     </section>
+    </div>
   )
 }

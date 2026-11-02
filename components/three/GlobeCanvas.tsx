@@ -11,11 +11,13 @@ interface GlobeCanvasProps {
   profile: DeviceProfile
   active: boolean
   onReady: () => void
+  /** The About page version: fewer particles, no markers and no bloom. */
+  calm?: boolean
 }
 
-export default function GlobeCanvas({ profile, active, onReady }: GlobeCanvasProps) {
+export default function GlobeCanvas({ profile, active, onReady, calm }: GlobeCanvasProps) {
   const [struggling, setStruggling] = useState(false)
-  const lowPower = profile.lowPower || struggling
+  const lowPower = profile.lowPower || struggling || calm
   const animated = !profile.reducedMotion
   const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()
 
@@ -30,7 +32,7 @@ export default function GlobeCanvas({ profile, active, onReady }: GlobeCanvasPro
     >
       <color attach="background" args={[bg]} />
       {animated && <PerformanceMonitor onDecline={() => setStruggling(true)} />}
-      <Globe density={profile.density} animated={animated} />
+      <Globe density={profile.density * (calm ? 0.6 : 1)} animated={animated} showMarkers={!calm} />
       {!lowPower && (
         <EffectComposer multisampling={0}>
           <Bloom mipmapBlur intensity={0.28} luminanceThreshold={0.5} luminanceSmoothing={0.3} radius={0.55} />

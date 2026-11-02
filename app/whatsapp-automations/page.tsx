@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: automations.meta.title,
   description: automations.meta.description,
   alternates: { canonical: routes.automations },
-  openGraph: { title: automations.meta.title, description: automations.meta.description, url: routes.automations },
+  openGraph: { title: automations.meta.title, description: automations.meta.description, url: routes.automations, images: ['/opengraph-image'] },
 }
 
 export default function AutomationsPage() {

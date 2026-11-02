@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: site.name,
     url: site.url,
   },
-  twitter: { card: 'summary_large_image' },
+  twitter: { card: 'summary_large_image', images: ['/opengraph-image'] },
 }
 
 export const viewport: Viewport = {
@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <FloatingActions />
         {site.ga4Id && <CookieBanner gaId={site.ga4Id} />}
-        <Analytics />
+        {process.env.VERCEL && <Analytics />}
       </body>
     </html>
   )

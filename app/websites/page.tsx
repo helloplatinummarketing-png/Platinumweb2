@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: websites.meta.title,
   description: websites.meta.description,
   alternates: { canonical: routes.websites },
-  openGraph: { title: websites.meta.title, description: websites.meta.description, url: routes.websites },
+  openGraph: { title: websites.meta.title, description: websites.meta.description, url: routes.websites, images: ['/opengraph-image'] },
 }
 
 const ICONS: Record<string, string> = {

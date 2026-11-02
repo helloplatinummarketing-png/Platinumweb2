@@ -139,6 +139,8 @@ export function GlobeHost() {
     return () => {
       cancelled = true
       cleanup()
+      // Leaves the shared globe state clean for the next page.
+      Object.assign(globeControls, { scale: 1, x: 0, y: 0, focus: 0 })
     }
   }, [])
 

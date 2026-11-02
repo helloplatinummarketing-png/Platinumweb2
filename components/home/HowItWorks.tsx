@@ -80,6 +80,7 @@ export function HowItWorks() {
   }, [])
 
   return (
+    <div>{/* GSAP wraps the pinned section, so React needs this stable parent to remove. */}
     <section ref={section} data-pinned={pinned || undefined} className="relative z-10 flex min-h-svh flex-col overflow-hidden bg-bg lg:flex-row lg:items-center">
       <div className="wrap relative z-10 pt-24 lg:grid lg:grid-cols-2 lg:pt-0">
         <div>
@@ -105,5 +106,6 @@ export function HowItWorks() {
         )}
       </div>
     </section>
+    </div>
   )
 }

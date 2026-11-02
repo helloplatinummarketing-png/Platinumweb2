@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: { absolute: `${home.meta.title} | Platinum Marketing Agency` },
   description: home.meta.description,
   alternates: { canonical: '/' },
-  openGraph: { title: home.meta.title, description: home.meta.description, url: '/' },
+  openGraph: { title: home.meta.title, description: home.meta.description, url: '/', images: ['/opengraph-image'] },
 }
 
 export default function HomePage() {

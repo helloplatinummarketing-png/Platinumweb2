@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: geo.meta.title,
   description: geo.meta.description,
   alternates: { canonical: routes.geo },
-  openGraph: { title: geo.meta.title, description: geo.meta.description, url: routes.geo },
+  openGraph: { title: geo.meta.title, description: geo.meta.description, url: routes.geo, images: ['/opengraph-image'] },
 }
 
 export default function AiVisibilityPage() {

@@ -65,6 +65,7 @@ export function Stats() {
   }, [])
 
   return (
+    <div>{/* GSAP wraps the pinned section, so React needs this stable parent to remove. */}
     <section id="stats" aria-label={statsCopy.ariaLabel} className="relative z-10 flex min-h-svh items-end pb-20 lg:items-center lg:pb-0">
       <div className="wrap grid lg:grid-cols-2">
         <ul ref={list} className="space-y-6 sm:space-y-9 lg:col-start-2 lg:pl-10">
@@ -80,5 +81,6 @@ export function Stats() {
         </ul>
       </div>
     </section>
+    </div>
   )
 }
