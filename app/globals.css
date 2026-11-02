@@ -107,6 +107,41 @@ html.lenis body {
     text-wrap: balance;
   }
 
+  .display-page {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 5.6vw, 5rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+
+  /* Stands in until a page's 3D has loaded, and on devices without WebGL. */
+  .scene-slot {
+    background: radial-gradient(circle at 50% 50%, rgb(43 214 123 / 0.14), transparent 62%);
+  }
+
+  /* Pinned scroll sequences: steps share one spot and cross-fade. */
+  [data-pinned] .seq-steps {
+    position: relative;
+    min-height: 15rem;
+  }
+
+  [data-pinned] .seq-step {
+    position: absolute;
+    inset: 0 0 auto;
+    margin: 0;
+  }
+
+  [data-pinned] .seq-flow {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   .section-heading {
     font-family: var(--font-display);
     font-size: clamp(2.1rem, 5.2vw, 4.25rem);

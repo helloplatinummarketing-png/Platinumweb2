@@ -15,17 +15,19 @@ interface SpinProps {
   animated: boolean
   children: React.ReactNode
   rest?: [number, number, number]
+  /** Radians per second while hovered. */
+  speed?: number
 }
 
 /** Holds a resting angle with a slow sway. Rotates fully while its card is hovered or focused. */
-export function Spinner({ index, hovered, animated, children, rest = [0.12, -0.42, 0] }: SpinProps) {
+export function Spinner({ index, hovered, animated, children, rest = [0.12, -0.42, 0], speed = 1.6 }: SpinProps) {
   const group = useRef<Group>(null)
   const extra = useRef(0)
 
   useFrame((state, delta) => {
     if (!group.current || !animated) return
     if (hovered.current === index) {
-      extra.current += delta * 1.6
+      extra.current += delta * speed
     } else {
       // Unwinds to the nearest full turn, so it always returns to facing the viewer.
       const target = Math.round(extra.current / (Math.PI * 2)) * Math.PI * 2

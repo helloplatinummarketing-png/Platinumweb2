@@ -27,7 +27,7 @@ export function Header() {
     `flex min-h-11 items-center text-sm font-medium transition-colors hover:text-accent ${pathname === href ? 'text-accent' : 'text-platinum'}`
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-border bg-bg/85">
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-border bg-bg/95">
       <div className="wrap flex h-16 items-center justify-between gap-4">
         <Logo />
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Main">

@@ -40,7 +40,7 @@ function buildGeometry(side: number) {
         const a = Math.random() * Math.PI * 2
         const u = Math.random() * 2 - 1
         const r = Math.sqrt(1 - u * u)
-        const radius = 0.7 + Math.random() ** 0.7 * 1.55
+        const radius = 0.7 + Math.random() ** 0.7 * 1.35
         scatter.set([r * Math.cos(a) * radius, u * radius * 0.82, r * Math.sin(a) * radius], i * 3)
         seeds[i] = Math.random()
         i++
