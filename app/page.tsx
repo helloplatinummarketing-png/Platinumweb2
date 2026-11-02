@@ -2,6 +2,12 @@ import type { Metadata } from 'next'
 import { home } from '@/content/home'
 import { GlobeHost } from '@/components/three/GlobeHost'
 import { Hero } from '@/components/home/Hero'
+import { HowItWorks } from '@/components/home/HowItWorks'
+import { Problem } from '@/components/home/Problem'
+import { Services } from '@/components/home/Services'
+import { Stats } from '@/components/home/Stats'
+import { Testimonials } from '@/components/home/Testimonials'
+import { FinalCta } from '@/components/sections/FinalCta'
 
 export const metadata: Metadata = {
   title: { absolute: `${home.meta.title} | Platinum Marketing Agency` },
@@ -15,8 +21,12 @@ export default function HomePage() {
     <>
       <GlobeHost />
       <Hero />
-      {/* TODO(milestone 3): problem, services, stats, how it works, testimonials, final CTA. Keeps the #services link working. */}
-      <div id="services" className="relative z-10" />
+      <Problem />
+      <Services />
+      <Stats />
+      <HowItWorks />
+      <Testimonials />
+      <FinalCta {...home.finalCta} />
     </>
   )
 }

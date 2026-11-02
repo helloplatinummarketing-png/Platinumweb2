@@ -26,6 +26,7 @@
 html {
   background: var(--bg);
   color-scheme: dark;
+  overflow-x: clip;
   scroll-padding-top: 5rem;
   -webkit-text-size-adjust: 100%;
 }
@@ -104,6 +105,75 @@ html.lenis body {
     line-height: 0.98;
     letter-spacing: -0.045em;
     text-wrap: balance;
+  }
+
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 5.2vw, 4.25rem);
+    font-weight: 500;
+    line-height: 1.03;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .panel {
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    background: var(--surface);
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 40rem) {
+    .panel {
+      padding: 1.75rem;
+    }
+  }
+
+  /* How It Works: while pinned, the steps share one spot and cross-fade. */
+  [data-pinned] .how-steps {
+    position: relative;
+    min-height: 13rem;
+  }
+
+  [data-pinned] .how-step {
+    position: absolute;
+    inset: 0 0 auto;
+    margin: 0;
+  }
+
+  /* Testimonials */
+  .drift {
+    display: flex;
+    width: max-content;
+    animation: drift 60s linear infinite;
+  }
+
+  .drift:hover,
+  .drift:focus-within {
+    animation-play-state: paused;
+  }
+
+  .drift-track {
+    display: flex;
+    gap: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drift {
+      width: auto;
+      overflow-x: auto;
+      padding-inline: 1rem;
+    }
+    .drift-track[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  .final-glow {
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 118%, rgb(43 214 123 / 0.55), transparent 70%),
+      radial-gradient(ellipse 40% 26% at 50% 104%, rgb(229 228 226 / 0.28), transparent 75%);
   }
 
   .btn {
@@ -198,6 +268,12 @@ html.lenis body {
     border-radius: 9999px;
     background: var(--accent);
     animation: live-pulse 1.8s ease-out infinite;
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(-50%);
   }
 }
 

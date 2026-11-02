@@ -21,7 +21,7 @@ import {
   RingGeometry,
 } from 'three'
 import { site } from '@/config/site'
-import { globeControls, latLonToVector } from './globeControls'
+import { globeCameraZ, globeControls, latLonToVector } from './globeControls'
 
 const LAND_MASK = '/textures/land-mask.png'
 const SPIN_SPEED = 0.035
@@ -244,6 +244,13 @@ export function Globe({ density, animated, showMarkers = true }: GlobeProps) {
     }
   }, [density, invalidate])
 
+  useEffect(() => {
+    globeControls.invalidate = invalidate
+    return () => {
+      globeControls.invalidate = () => {}
+    }
+  }, [invalidate])
+
   // Gentle parallax from device tilt on phones. The mouse comes through R3F's pointer.
   useEffect(() => {
     if (!animated) return
@@ -269,8 +276,7 @@ export function Globe({ density, animated, showMarkers = true }: GlobeProps) {
 
     if (animated) freeSpin.current += delta * SPIN_SPEED
 
-    // Pull the camera back on narrow screens so the whole globe still fits.
-    const fitZ = 3.15 * Math.max(1, 0.72 / state.viewport.aspect)
+    const fitZ = globeCameraZ(state.viewport.aspect)
     if (state.camera.position.z !== fitZ) state.camera.position.z = fitZ
 
     const c = globeControls
