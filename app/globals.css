@@ -1,0 +1,234 @@
+@import 'tailwindcss';
+
+/* Every colour lives here. Change a value and the whole site, including the 3D, follows. */
+:root {
+  --bg: #07080b;
+  --surface: #0f1116;
+  --platinum: #e5e4e2;
+  --silver: #9ea3ad;
+  --accent: #2bd67b;
+  --border: rgba(229, 228, 226, 0.08);
+  --border-strong: rgba(229, 228, 226, 0.2);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-platinum: var(--platinum);
+  --color-silver: var(--silver);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--platinum);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: clip;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 40rem) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Platinum treated as a metal: a brushed gradient clipped to the text. */
+  .text-metal {
+    background: linear-gradient(
+      100deg,
+      #8f9299 0%,
+      #f4f3f1 22%,
+      #bfc1c5 42%,
+      #ffffff 58%,
+      #a8abb1 78%,
+      #e5e4e2 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (forced-colors: active) {
+    .text-metal {
+      background: none;
+      color: CanvasText;
+    }
+  }
+
+  .display-hero {
+    font-family: var(--font-display);
+    font-size: clamp(2.65rem, 7.6vw, 6.5rem);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    transition:
+      background-color 160ms,
+      border-color 160ms,
+      box-shadow 160ms;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover {
+    background: #48e690;
+    box-shadow: 0 0 32px rgb(43 214 123 / 0.35);
+  }
+
+  .btn-ghost {
+    border-color: var(--border-strong);
+    background: rgb(7 8 11 / 0.5);
+    color: var(--platinum);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--platinum);
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -5rem;
+    left: 1rem;
+    z-index: 70;
+    border-radius: 0.5rem;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+  }
+
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+
+  /* Shown before the globe loads, and instead of it on devices without WebGL. */
+  .globe-poster {
+    background:
+      radial-gradient(circle at 50% 58%, rgb(43 214 123 / 0.16), transparent 42%),
+      radial-gradient(circle at 50% 58%, rgb(229 228 226 / 0.05), transparent 62%),
+      var(--bg);
+  }
+
+  /* Dashboard */
+  .glass-panel {
+    border: 1px solid var(--border-strong);
+    background: rgb(15 17 22 / 0.88);
+    box-shadow:
+      0 -24px 90px rgb(43 214 123 / 0.08),
+      inset 0 1px 0 rgb(229 228 226 / 0.12);
+  }
+
+  @media (min-width: 64rem) {
+    .glass-panel {
+      background: rgb(15 17 22 / 0.72);
+      backdrop-filter: blur(14px);
+    }
+  }
+
+  .rise-in {
+    animation: rise-in 1100ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+  }
+
+  .feed-item {
+    animation: feed-in 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .live-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--accent);
+    animation: live-pulse 1.8s ease-out infinite;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(90px);
+  }
+}
+
+@keyframes feed-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes live-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(43 214 123 / 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 9px rgb(43 214 123 / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
